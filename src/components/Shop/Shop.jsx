@@ -13,7 +13,7 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
   const { totalProducts } = useLoaderData();
 
   // const itemsPerPage = 10; // TODO make it Dynamic
@@ -22,11 +22,22 @@ const Shop = () => {
   const pageNumbers = [...Array(totalPages).keys()];
   // console.log(pageNumbers);
 
+  // useEffect(() => {
+  //   fetch("http://localhost:5000/products")
+  //     .then((res) => res.json())
+  //     .then((data) => setProducts(data));
+  // }, []);
+
   useEffect(() => {
-    fetch("http://localhost:5000/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data));
-  }, []);
+    async function fetchData() {
+      const response = await fetch(
+        `http://localhost:5000/products?page=${currentPage}&limit=${itemsPerPage}`
+      );
+      const data = await response.json();
+      setProducts(data);
+    }
+    fetchData();
+  }, [currentPage, itemsPerPage]);
 
   useEffect(() => {
     const storedCart = getShoppingCart();
@@ -73,7 +84,7 @@ const Shop = () => {
     deleteShoppingCart();
   };
 
-  const options = [5, 10, 15, 20];
+  const options = [5, 6, 9, 10, 12, 15, 18, 20];
   const handleSelectChange = (event) => {
     setItemsPerPage(parseInt(event.target.value));
     setCurrentPage(0);
@@ -101,7 +112,7 @@ const Shop = () => {
       </div>
       <div className="pagination">
         <p>
-          Current Page: {currentPage} and Items Per Page: {itemsPerPage}
+          Current Page: {currentPage + 1} and Items Per Page: {itemsPerPage}
         </p>
         {pageNumbers.map((number) => (
           <button
@@ -109,7 +120,7 @@ const Shop = () => {
             key={number}
             onClick={() => setCurrentPage(number)}
           >
-            {number}
+            {number + 1}
           </button>
         ))}
         <select value={itemsPerPage} onChange={handleSelectChange}>
