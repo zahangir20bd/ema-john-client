@@ -13,13 +13,14 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const { totalProducts } = useLoaderData();
 
-  const itemsPerPage = 10; // TODO make it Dynamic
+  // const itemsPerPage = 10; // TODO make it Dynamic
   const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
   const pageNumbers = [...Array(totalPages).keys()];
-  console.log(pageNumbers);
+  // console.log(pageNumbers);
 
   useEffect(() => {
     fetch("http://localhost:5000/products")
@@ -72,6 +73,12 @@ const Shop = () => {
     deleteShoppingCart();
   };
 
+  const options = [5, 10, 15, 20];
+  const handleSelectChange = (event) => {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(0);
+  };
+
   return (
     <>
       <div className="shop-container">
@@ -93,12 +100,25 @@ const Shop = () => {
         </div>
       </div>
       <div className="pagination">
-        <p>Current Page: {currentPage}</p>
+        <p>
+          Current Page: {currentPage} and Items Per Page: {itemsPerPage}
+        </p>
         {pageNumbers.map((number) => (
-          <button key={number} onClick={() => setCurrentPage(number)}>
+          <button
+            className={currentPage === number ? "selected" : ""}
+            key={number}
+            onClick={() => setCurrentPage(number)}
+          >
             {number}
           </button>
         ))}
+        <select value={itemsPerPage} onChange={handleSelectChange}>
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       </div>
     </>
   );
