@@ -12,6 +12,7 @@ import { Link, useLoaderData } from "react-router-dom";
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
   const { totalProducts } = useLoaderData();
 
   const itemsPerPage = 10; // TODO make it Dynamic
@@ -92,8 +93,11 @@ const Shop = () => {
         </div>
       </div>
       <div className="pagination">
+        <p>Current Page: {currentPage}</p>
         {pageNumbers.map((number) => (
-          <button key={number}>{number}</button>
+          <button key={number} onClick={() => setCurrentPage(number)}>
+            {number}
+          </button>
         ))}
       </div>
     </>
